@@ -1,23 +1,93 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Triangle Ink AI Scene Helper</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Triangle Ink OBJ Viewer + Converter</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<h1>Triangle Ink AI Scene Helper</h1>
+  <div class="app">
+    <aside class="panel">
+      <h1>Triangle Ink OBJ Viewer</h1>
 
-<p>Describe a scene. The AI will generate Lua-style scene code.</p>
+      <div class="block">
+        <label class="btn">
+          Load OBJ
+          <input id="fileInput" type="file" accept=".obj,text/plain" />
+        </label>
 
-<textarea id="prompt" placeholder="Example: Spawn a 600-triangle Utah teapot at (0,0,10) with per-triangle colors"></textarea>
+        <div id="dropzone" class="dropzone" tabindex="0">
+          Drag and drop an OBJ here
+          <div class="muted">or click this area and pick a file</div>
+        </div>
 
-<br><br>
-<button id="ask">Ask AI</button>
+        <div class="stats">
+          <div><span class="k">Vertices:</span> <span id="statVerts">0</span></div>
+          <div><span class="k">Triangles:</span> <span id="statTris">0</span></div>
+          <div><span class="k">Colors:</span> <span id="statColors">Off</span></div>
+        </div>
+      </div>
 
-<pre id="output"></pre>
+      <div class="block">
+        <label class="row">
+          <span>Triangle limit</span>
+          <input id="triLimit" type="number" min="50" max="50000" step="1" value="600" />
+        </label>
 
-<script src="config.js"></script>
-<script src="app.js"></script>
+        <label class="row check">
+          <input id="toggleColors" type="checkbox" checked />
+          <span>Enable colors</span>
+        </label>
+
+        <label class="row check">
+          <input id="toggleCull" type="checkbox" checked />
+          <span>Backface culling</span>
+        </label>
+
+        <label class="row check">
+          <input id="toggleAuto" type="checkbox" checked />
+          <span>Auto rotate</span>
+        </label>
+
+        <label class="row">
+          <span>FOV</span>
+          <input id="fov" type="number" min="20" max="140" step="1" value="75" />
+        </label>
+      </div>
+
+      <div class="block">
+        <div class="row">
+          <button id="btnExport" class="btn2">Export to [[v/f]] format</button>
+          <button id="btnCopy" class="btn2">Copy</button>
+          <button id="btnDownload" class="btn2">Download</button>
+        </div>
+        <textarea id="exportOut" spellcheck="false" placeholder="Export output will appear here"></textarea>
+        <div class="muted small">
+          Export format uses 1-based indices. Faces are triangles only.
+        </div>
+      </div>
+
+      <div class="block small">
+        <div class="muted">
+          Controls:
+          <ul>
+            <li>Drag mouse: rotate model</li>
+            <li>Wheel: zoom</li>
+            <li>WASD or arrows: move camera</li>
+            <li>Q/E: up/down</li>
+            <li>R: reset view</li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <main class="view">
+      <canvas id="canvas"></canvas>
+      <div class="overlay" id="overlay"></div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
