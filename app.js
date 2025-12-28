@@ -22,6 +22,14 @@ const btnCopy = $("btnCopy");
 const btnDownload = $("btnDownload");
 const exportOut = $("exportOut");
 
+// Scene inserter (separate output)
+const meshIdEl = $("meshId");
+const insBackcullEl = $("insBackcull");
+const btnExportIns = $("btnExportIns");
+const btnCopyIns = $("btnCopyIns");
+const btnDownloadIns = $("btnDownloadIns");
+const exportIns = $("exportIns");
+
 const canvas = $("canvas");
 const overlay = $("overlay");
 const ctx = canvas.getContext("2d");
@@ -29,6 +37,13 @@ const ctx = canvas.getContext("2d");
 const palette = [
   "#f2f2f2", "#ffd166", "#06d6a0", "#118ab2", "#ef476f",
   "#8338ec", "#3a86ff", "#ff006e", "#fb5607"
+];
+
+// Eurographics ink palette indices.
+// Safe default ramp. Replace if you want a different canonical palette mapping.
+const inkPalette = [
+  44, 43, 42, 41, 40, 39, 38, 37,
+  38, 39, 40, 41, 42, 43
 ];
 
 function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
@@ -135,6 +150,27 @@ function exportVF(mesh){
   }
   out.push("]]");
   return out.join("\n");
+}
+
+function buildInserter(mesh){
+  const meshId = clamp(parseInt(meshIdEl.value || "7", 10), 1, 999);
+  const backcull = !!insBackcullEl.checked;
+
+  const cols = new Array(mesh.tris.length);
+  const n = inkPalette.length || 1;
+  for (let i = 0; i < cols.length; i++) cols[i] = inkPalette[i % n];
+
+  // One-line color array (your engine expects this exact style)
+  const colorLine = "{ " + cols.join(", ") + " }";
+
+  const lines = [];
+  lines.push(`local mesh = instance.new("mesh")`);
+  lines.push(`mesh.meshID = ${meshId}`);
+  lines.push(`mesh.backcull = ${backcull ? "true" : "false"}`);
+  lines.push(`mesh.color = ${colorLine}`);
+  lines.push(`setPosition3(mesh,{0,0,0})`);
+  lines.push(`setSize3(mesh,{1,1,1})`);
+  return lines.join("\n");
 }
 
 // Rendering state
@@ -256,6 +292,37 @@ btnDownload.addEventListener("click", () => {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "mesh_vf_export.txt";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    URL.revokeObjectURL(a.href);
+    a.remove();
+  }, 50);
+});
+
+// Scene inserter (separate output)
+btnExportIns.addEventListener("click", () => {
+  exportIns.value = buildInserter(mesh);
+});
+
+btnCopyIns.addEventListener("click", async () => {
+  const txt = exportIns.value || buildInserter(mesh);
+  exportIns.value = txt;
+  try {
+    await navigator.clipboard.writeText(txt);
+  } catch {
+    exportIns.select();
+    document.execCommand("copy");
+  }
+});
+
+btnDownloadIns.addEventListener("click", () => {
+  const txt = exportIns.value || buildInserter(mesh);
+  exportIns.value = txt;
+  const blob = new Blob([txt], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "scene_inserter.txt";
   document.body.appendChild(a);
   a.click();
   setTimeout(() => {
