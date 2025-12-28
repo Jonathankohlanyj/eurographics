@@ -5,7 +5,7 @@ A tiny offline web app (HTML + CSS + JS) that:
 - triangulates faces
 - renders it on a canvas (software 3D)
 - exports to this custom format:
-- online website: https://jonathankohlanyj.github.io/eurographics/
+- online website: https://jonathankohlanyj.github.io/eurographics/ (broken)
 
 ```
 [[
