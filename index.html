@@ -58,14 +58,39 @@
 
       <div class="block">
         <div class="row">
-          <button id="btnExport" class="btn2">Export to [[v/f]] format</button>
-          <button id="btnCopy" class="btn2">Copy</button>
-          <button id="btnDownload" class="btn2">Download</button>
+          <button id="btnExport" class="btn2">Export OBJ ([[v/f]])</button>
+          <button id="btnCopy" class="btn2">Copy OBJ</button>
+          <button id="btnDownload" class="btn2">Download OBJ</button>
         </div>
-        <textarea id="exportOut" spellcheck="false" placeholder="Export output will appear here"></textarea>
+        <textarea id="exportOut" spellcheck="false" placeholder="OBJ export will appear here"></textarea>
         <div class="muted small">
           Export format uses 1-based indices. Faces are triangles only.
         </div>
+      </div>
+
+      <div class="block">
+        <div class="row">
+          <span class="muted">Scene inserter (colors)</span>
+        </div>
+
+        <label class="row">
+          <span>MeshID</span>
+          <input id="meshId" type="number" min="1" max="999" step="1" value="7" />
+        </label>
+
+        <label class="row check">
+          <input id="insBackcull" type="checkbox" checked />
+          <span>Backcull</span>
+        </label>
+
+        <div class="row">
+          <button id="btnExportIns" class="btn2">Build inserter</button>
+          <button id="btnCopyIns" class="btn2">Copy inserter</button>
+          <button id="btnDownloadIns" class="btn2">Download inserter</button>
+        </div>
+
+        <textarea id="exportIns" spellcheck="false" placeholder="Inserter output will appear here"></textarea>
+        <div class="muted small">Outputs Lua with a single-line color array.</div>
       </div>
 
       <div class="block small">
